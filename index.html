@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkHub - คลังรวมลิ้งค์โปรด & บันทึกท่องเที่ยว/ของกิน</title>
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.5);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(107, 114, 128, 0.8);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-4">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="resetFilters()">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 flex-shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-300">
+                LinkHub
+              </h1>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-medium">GitHub Pages</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">รวมลิ้งค์โปรด • ของกิน • แพลนเที่ยว • จดโน้ต</p>
+          </div>
+        </div>
+
+        <!-- Search Bar (Live) -->
+        <div class="flex-1 max-w-lg mx-2">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="searchInput" 
+              oninput="handleSearch(this.value)" 
+              placeholder="ค้นหาชื่อ, แฮชแท็ก, หมวดหมู่, หรือโน้ต..." 
+              class="w-full pl-10 pr-10 py-2 rounded-xl text-sm bg-slate-100 dark:bg-slate-700/60 border border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none transition"
+            >
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-2">
+          
+          <!-- Add Link Button -->
+          <button 
+            onclick="openAddLinkModal()"
+            class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium text-sm shadow-md shadow-blue-500/20 active:scale-95 transition"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span class="hidden sm:inline">เพิ่มลิ้งค์ใหม่</span>
+          </button>
+
+          <!-- Manage Categories Button -->
+          <button 
+            onclick="openCategoryModal()"
+            title="จัดการหมวดหมู่"
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </button>
+
+          <!-- Backup / Import Button -->
+          <button 
+            onclick="openBackupModal()"
+            title="สำรอง & กู้คืนข้อมูล (JSON)"
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+            </svg>
+          </button>
+
+          <!-- Dark Mode Toggle -->
+          <button 
+            onclick="toggleDarkMode()" 
+            title="สลับโหมดมืด/สว่าง"
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
+          >
+            <span id="darkModeIcon" class="text-base">🌙</span>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full flex flex-col gap-5">
+
+    <!-- CATEGORIES BAR (Horizontal Scrollable) -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        <span>หมวดหมู่ทริป & หัวข้อ (Category)</span>
+        <button onclick="openCategoryModal()" class="text-blue-600 dark:text-blue-400 hover:underline normal-case font-normal">
+          + จัดการ / เพิ่มหมวด
+        </button>
+      </div>
+      <div id="categoryPills" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- PLATFORM FILTER BAR (Chips) -->
+    <div class="flex flex-col gap-2">
+      <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        แพลตฟอร์มโซเชียลมีเดีย (Platform)
+      </div>
+      <div id="platformChips" class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- STATS & CONTROLS BAR -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 text-sm">
+      <div class="flex items-center gap-2">
+        <span id="linksCountBadge" class="font-medium text-slate-700 dark:text-slate-300">กำลังโหลด...</span>
+        <span id="activeFilterTags" class="flex items-center gap-1.5 flex-wrap"></span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Favorites Filter Toggle -->
+        <button 
+          id="favoriteFilterBtn"
+          onclick="toggleFavoriteFilter()"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium text-slate-600 dark:text-slate-300 transition"
+        >
+          <span>⭐</span>
+          <span>เฉพาะรายการโปรด</span>
+        </button>
+
+        <!-- View mode: Grid / List -->
+        <div class="flex items-center bg-slate-200 dark:bg-slate-700/70 p-0.5 rounded-lg text-xs">
+          <button id="viewGridBtn" onclick="setViewMode('grid')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100">
+            กริด
+          </button>
+          <button id="viewListBtn" onclick="setViewMode('list')" class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium">
+            แถว
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LINKS CONTAINER -->
+    <div id="linksContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Rendered by JS -->
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="hidden flex-col items-center justify-center py-16 px-4 text-center">
+      <div class="w-16 h-16 mb-4 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center text-3xl">
+        🔍
+      </div>
+      <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-200">ยังไม่พบลิ้งค์ที่ค้นหา</h3>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
+        ลองเปลี่ยนคำค้นหา หรือกดปุ่มด้านล่างเพื่อเริ่มวางลิ้งค์แรกของคุณ
+      </p>
+      <button 
+        onclick="openAddLinkModal()"
+        class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow-md transition"
+      >
+        + เพิ่มลิ้งค์แรกเลย
+      </button>
+    </div>
+
+  </main>
+
+  <!-- MODAL: ADD / EDIT LINK -->
+  <div id="linkModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-xl w-full p-6 my-8 transform transition-all">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <h3 id="modalTitle" class="text-lg font-bold text-slate-900 dark:text-slate-100">เพิ่มลิ้งค์ใหม่</h3>
+        <button onclick="closeLinkModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+
+      <form id="linkForm" onsubmit="saveLink(event)" class="mt-4 space-y-4">
+        <input type="hidden" id="linkId">
+
+        <!-- URL Input & Auto Fetch -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
+            URL ของเว็บ / วิดีโอ <span class="text-red-500">*</span>
+          </label>
+          <div class="flex gap-2">
+            <input 
+              type="url" 
+              id="linkUrl" 
+              required 
+              placeholder="https://www.tiktok.com/... หรือ https://youtu.be/..." 
+              oninput="handleUrlInput(this.value)"
+              class="flex-1 px-3.5 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
+            >
+            <button 
+              type="button" 
+              id="btnFetchMeta"
+              onclick="fetchMetadataClient()"
+              title="ดึงชื่อและรูปอัตโนมัติ"
+              class="px-3 py-2 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 rounded-xl text-xs font-medium border border-indigo-200 dark:border-indigo-800 transition flex items-center gap-1.5"
+            >
+              <span id="fetchSpinner" class="hidden animate-spin">⏳</span>
+              <span>ดึงข้อมูลเว็บ</span>
+            </button>
+          </div>
+          <div id="detectedPlatformBadge" class="mt-1.5 text-xs text-slate-500 flex items-center gap-1.5">
+            <!-- Detected badge -->
+          </div>
+        </div>
+
+        <!-- Platform & Category Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
+              แพลตฟอร์ม
+            </label>
+            <select id="linkPlatform" class="w-full px-3 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none">
+              <option value="youtube">🔴 YouTube</option>
+              <option value="tiktok">⚫ TikTok</option>
+              <option value="facebook">🔵 Facebook</option>
+              <option value="instagram">🟣 Instagram</option>
+              <option value="x">⚪ X (Twitter)</option>
+              <option value="lemon8">🟡 Lemon8</option>
+              <option value="maps">🗺️ Google Maps</option>
+              <option value="web">🌐 เว็บไซต์ / อื่นๆ</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">
+                หมวดหมู่
+              </label>
+              <button type="button" onclick="openCategoryModal()" class="text-xs text-blue-600 hover:underline">
+                + เพิ่มหมวด
+              </button>
+            </div>
+            <select id="linkCategory" class="w-full px-3 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
+            หัวข้อ / ชื่อโพสต์ <span class="text-red-500">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="linkTitle" 
+            required 
+            placeholder="เช่น รีวิวหมี่โคราชร้านเด็ด หรือ คาเฟ่เขาใหญ่เปิดใหม่" 
+            class="w-full px-3.5 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
+          >
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
+            รายละเอียดคร่าวๆ (ถ้ามี)
+          </label>
+          <textarea 
+            id="linkDescription" 
+            rows="2" 
+            placeholder="สรุปเนื้อหา หรือจุดน่าสนใจ..." 
+            class="w-full px-3.5 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
+          ></textarea>
+        </div>
+
+        <!-- Image URL & Preview -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
+            รูปภาพหน้าปก URL (ใส่หรือไม่ใส่ก็ได้)
+          </label>
+          <input 
+            type="url" 
+            id="linkImageUrl" 
+            placeholder="https://... หรือจะให้ระบบดึงอัตโนมัติ" 
+            class="w-full px-3.5 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
+          >
+        </div>
+
+        <!-- Tags -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
+            แท็ก (คั่นด้วยจุลภาค เช่น ของกิน, คาเฟ่, ริมทะเล)
+          </label>
+          <input 
+            type="text" 
+            id="linkTags" 
+            placeholder="ของกิน, โคราช, คาเฟ่" 
+            class="w-full px-3.5 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
+          >
+        </div>
+
+        <!-- Initial Comment (Only when creating) -->
+        <div id="initialCommentGroup">
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
+            💬 โน้ต/คอมเมนต์แรกเกี่ยวกับลิ้งค์นี้ (บันทึกส่วนตัว)
+          </label>
+          <textarea 
+            id="linkInitialComment" 
+            rows="2" 
+            placeholder="เช่น ร้านเปิด 10.00 น. เมนูที่ต้องสั่งคือ... หรือ เพื่อนแนะนำว่าต้องจองคิว" 
+            class="w-full px-3.5 py-2 rounded-xl text-sm bg-amber-50/60 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 focus:border-amber-500 outline-none text-slate-800 dark:text-slate-100"
+          ></textarea>
+        </div>
+
+        <!-- Mark as Favorite -->
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="linkFavorite" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+          <label for="linkFavorite" class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+            ⭐ ปักหมุดเป็นรายการโปรด (แสดงด้านบนสุด)
+          </label>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+          <button 
+            type="button" 
+            onclick="closeLinkModal()" 
+            class="px-4 py-2 rounded-xl text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+          >
+            ยกเลิก
+          </button>
+          <button 
+            type="submit" 
+            id="btnSaveLink"
+            class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm shadow-md transition"
+          >
+            บันทึก
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: COMMENTS TIMELINE & ADD NOTE -->
+  <div id="commentsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-xl w-full p-6 my-8 transform transition-all flex flex-col max-h-[85vh]">
+      
+      <!-- Header -->
+      <div class="flex items-start justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="commentModalPlatformBadge"></span>
+            <span class="text-xs text-slate-400 font-medium">บันทึก & ความคิดเห็น</span>
+          </div>
+          <h3 id="commentModalLinkTitle" class="text-base font-bold text-slate-900 dark:text-slate-100 mt-1 line-clamp-1"></h3>
+          <a id="commentModalLinkUrl" href="#" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 mt-0.5">
+            <span class="truncate max-w-md" id="commentModalLinkUrlText"></span>
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          </a>
+        </div>
+        <button onclick="closeCommentsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+
+      <!-- Comments Timeline List -->
+      <div id="commentsList" class="flex-1 overflow-y-auto py-4 space-y-3 custom-scrollbar">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Add New Comment Box -->
+      <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
+        <form id="addCommentForm" onsubmit="submitComment(event)" class="space-y-2">
+          <input type="hidden" id="commentLinkId">
+          <div class="flex gap-2">
+            <textarea 
+              id="commentContent" 
+              required 
+              rows="2" 
+              placeholder="พิมพ์คอมเมนต์หรือโน้ตเพิ่มเติมเกี่ยวกับลิ้งค์นี้..." 
+              class="flex-1 px-3.5 py-2 rounded-xl text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
+            ></textarea>
+            <button 
+              type="submit" 
+              class="px-4 py-2 bg-gradient-to-tr from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-medium rounded-xl shadow self-end transition active:scale-95 flex items-center gap-1"
+            >
+              <span>ส่ง</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: CATEGORY MANAGER -->
+  <div id="categoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-lg w-full p-6 my-8">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">จัดการหมวดหมู่</h3>
+        <button onclick="closeCategoryModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+
+      <!-- Add New Category Form -->
+      <form onsubmit="submitCategory(event)" class="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 space-y-3">
+        <h4 class="text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">สร้างหมวดหมู่ใหม่</h4>
+        <div class="grid grid-cols-12 gap-2">
+          <!-- Icon Picker -->
+          <div class="col-span-3 sm:col-span-2">
+            <label class="block text-[11px] text-slate-500 mb-1">ไอคอน</label>
+            <input 
+              type="text" 
+              id="newCatIcon" 
+              value="📍" 
+              maxlength="4"
+              class="w-full text-center py-1.5 px-1 rounded-lg text-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 outline-none"
+            >
+          </div>
+          <!-- Name -->
+          <div class="col-span-6 sm:col-span-7">
+            <label class="block text-[11px] text-slate-500 mb-1">ชื่อหมวดหมู่</label>
+            <input 
+              type="text" 
+              id="newCatName" 
+              required 
+              placeholder="เช่น ของกินเชียงใหม่" 
+              class="w-full py-2 px-3 rounded-lg text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
+            >
+          </div>
+          <!-- Color -->
+          <div class="col-span-3 sm:col-span-3">
+            <label class="block text-[11px] text-slate-500 mb-1">สีประจำหมวด</label>
+            <input 
+              type="color" 
+              id="newCatColor" 
+              value="#3B82F6" 
+              class="w-full h-9 p-0.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 cursor-pointer"
+            >
+          </div>
+        </div>
+
+        <!-- Quick emoji buttons -->
+        <div class="flex items-center gap-1.5 flex-wrap pt-1 text-base">
+          <span class="text-[11px] text-slate-400 mr-1">อีโมจิแนะนำ:</span>
+          <button type="button" onclick="setNewCatIcon('🍜')" class="hover:scale-125 transition">🍜</button>
+          <button type="button" onclick="setNewCatIcon('⛰️')" class="hover:scale-125 transition">⛰️</button>
+          <button type="button" onclick="setNewCatIcon('🏖️')" class="hover:scale-125 transition">🏖️</button>
+          <button type="button" onclick="setNewCatIcon('✈️')" class="hover:scale-125 transition">✈️</button>
+          <button type="button" onclick="setNewCatIcon('☕')" class="hover:scale-125 transition">☕</button>
+          <button type="button" onclick="setNewCatIcon('🏨')" class="hover:scale-125 transition">🏨</button>
+          <button type="button" onclick="setNewCatIcon('🛍️')" class="hover:scale-125 transition">🛍️</button>
+          <button type="button" onclick="setNewCatIcon('🚗')" class="hover:scale-125 transition">🚗</button>
+          <button type="button" onclick="setNewCatIcon('🍱')" class="hover:scale-125 transition">🍱</button>
+          <button type="button" onclick="setNewCatIcon('📸')" class="hover:scale-125 transition">📸</button>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition"
+        >
+          + เพิ่มหมวดหมู่นี้
+        </button>
+      </form>
+
+      <!-- Category List -->
+      <div class="mt-4">
+        <h4 class="text-xs font-semibold uppercase text-slate-600 dark:text-slate-300 mb-2">หมวดหมู่ที่มีอยู่</h4>
+        <div id="categoryManagerList" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: YOUTUBE EMBED PLAYER -->
+  <div id="youtubeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4">
+    <div class="bg-black rounded-2xl overflow-hidden shadow-2xl max-w-3xl w-full border border-slate-700">
+      <div class="flex items-center justify-between p-3 bg-slate-900 border-b border-slate-800 text-white">
+        <h3 id="ytModalTitle" class="text-sm font-medium truncate"></h3>
+        <button onclick="closeYoutubeModal()" class="text-slate-400 hover:text-white px-2 font-bold text-lg">✕</button>
+      </div>
+      <div class="relative w-full pb-[56.25%] bg-black">
+        <iframe id="ytIframe" class="absolute inset-0 w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BACKUP & RESTORE -->
+  <div id="backupModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-md w-full p-6">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">สำรอง & กู้คืนข้อมูล (JSON)</h3>
+        <button onclick="closeBackupModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-sm">
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700">
+          <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-1">ดาวน์โหลดข้อมูลสำรอง (JSON)</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">บันทึกลิ้งค์ หมวดหมู่ และคอมเมนต์ทั้งหมดไว้ในเครื่อง เพื่อเก็บรักษาหรือย้ายเครื่อง</p>
+          <button 
+            onclick="downloadBackup()" 
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <span>ดาวน์โหลด JSON Backup</span>
+          </button>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700">
+          <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-1">กู้คืน / นำเข้าข้อมูล (JSON)</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">เลือกไฟล์ JSON ที่เคยสำรองไว้ เพื่อนำข้อมูลกลับเข้ามา</p>
+          <input type="file" id="importFileInput" accept=".json" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+          <button 
+            onclick="uploadBackup()" 
+            class="mt-2 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-medium transition"
+          >
+            นำเข้าข้อมูลเดี๋ยวนี้
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div id="toastContent" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm shadow-xl flex items-center gap-2 border border-slate-700">
+      <span id="toastIcon">✅</span>
+      <span id="toastMsg">บันทึกสำเร็จ</span>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT: Standalone Client-Side App (GitHub Pages Ready) -->
+  <script>
+    // Storage Keys
+    const STORAGE_KEY_LINKS = 'linkhub_links';
+    const STORAGE_KEY_CATS = 'linkhub_categories';
+
+    // Platform definitions
+    const PLATFORMS = {
+      all: { name: 'ทั้งหมด', icon: '🌐', color: '#3B82F6', badgeBg: 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200' },
+      youtube: { name: 'YouTube', icon: '▶️', color: '#EF4444', badgeBg: 'bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-300 border-red-200 dark:border-red-800' },
+      tiktok: { name: 'TikTok', icon: '🎵', color: '#000000', badgeBg: 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-200 border-zinc-300 dark:border-zinc-700' },
+      facebook: { name: 'Facebook', icon: '👥', color: '#1877F2', badgeBg: 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-800' },
+      instagram: { name: 'Instagram', icon: '📷', color: '#E1306C', badgeBg: 'bg-pink-50 text-pink-600 dark:bg-pink-950/60 dark:text-pink-300 border-pink-200 dark:border-pink-800' },
+      x: { name: 'X / Twitter', icon: '🐦', color: '#0f1419', badgeBg: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700' },
+      lemon8: { name: 'Lemon8', icon: '🍋', color: '#EAB308', badgeBg: 'bg-yellow-50 text-yellow-700 dark:bg-yellow-950/60 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800' },
+      maps: { name: 'Google Maps', icon: '📍', color: '#10B981', badgeBg: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' },
+      web: { name: 'เว็บไซต์', icon: '🔗', color: '#64748B', badgeBg: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700' }
+    };
+
+    // Initial Seeds (Matching exact user request)
+    const DEFAULT_CATEGORIES = [
+      { id: 1, name: 'ของกินโคราช', icon: '🍜', color: '#F97316' },
+      { id: 2, name: 'เที่ยวเขาใหญ่', icon: '⛰️', color: '#10B981' },
+      { id: 3, name: 'เที่ยวชลบุรี-ระยอง', icon: '🏖️', color: '#06B6D4' },
+      { id: 4, name: 'เที่ยวฟุกุโอกะ', icon: '✈️', color: '#EC4899' },
+      { id: 5, name: 'ที่พัก & คาเฟ่', icon: '☕', color: '#8B5CF6' },
+      { id: 6, name: 'ทั่วไป', icon: '📌', color: '#6B7280' }
+    ];
+
+    const DEFAULT_LINKS = [
+      {
+        id: 1,
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        title: '10 ร้านเด็ดโคราช หมี่โคราชแท้ๆ และส้มตำรสแซ่บ',
+        description: 'รีวิวร้านอาหารเจ้าดังรอบเมืองโคราช แนะนำร้านข้างทางและร้านระดับตำนาน',
+        platform: 'youtube',
+        category_id: 1,
+        tags: 'ของกิน, โคราช, ร้านเด็ด',
+        image_url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=60',
+        is_favorite: 1,
+        created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+        comments: [
+          { id: 101, author: 'ฉัน', content: 'ร้านหมี่โคราชร้านที่ 3 ในคลิปต้องไปลอง เส้นเหนียวนุ่มมาก', created_at: new Date(Date.now() - 86400000 * 2).toISOString() },
+          { id: 102, author: 'ฉัน', content: 'เปิด 09:30 - 16:00 น. ไปช่วงเที่ยงคนแน่นหน่อย', created_at: new Date(Date.now() - 86400000 * 1).toISOString() }
+        ]
+      },
+      {
+        id: 2,
+        url: 'https://www.tiktok.com/@khaoyai_guide/video/1234567890',
+        title: 'แจกแพลนเที่ยวเขาใหญ่ 2 วัน 1 คืน คาเฟ่เปิดใหม่เพียบ!',
+        description: 'จุดเช็คอินถ่ายรูปฟีลสวิสเซอร์แลนด์ สวนดอกไม้ และจุดชมวิวกังหันลม',
+        platform: 'tiktok',
+        category_id: 2,
+        tags: 'เขาใหญ่, เที่ยวภูเขา, คาเฟ่',
+        image_url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&auto=format&fit=crop&q=60',
+        is_favorite: 1,
+        created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+        comments: [
+          { id: 103, author: 'ฉัน', content: 'คาเฟ่สีขาวมุมถ่ายรูปสวย แนะนำไปเช้าๆ แสงสวย ไม่ร้อน', created_at: new Date(Date.now() - 86400000 * 1).toISOString() }
+        ]
+      },
+      {
+        id: 3,
+        url: 'https://www.facebook.com/RayongGuide/posts/987654321',
+        title: 'พิกัดซีฟู้ดสดๆ ชลบุรี-ระยอง กินริมหาดแม่รำพึงและบางแสน',
+        description: 'รวมร้านอาหารทะเลปูเป็นกุ้งเป็น น้ำจิ้มซีฟู้ดรสจัดจ้าน ราคาชาวบ้าน',
+        platform: 'facebook',
+        category_id: 3,
+        tags: 'ชลบุรี, ระยอง, ซีฟู้ด, ทะเล',
+        image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=60',
+        is_favorite: 0,
+        created_at: new Date(Date.now() - 86400000 * 4).toISOString(),
+        comments: [
+          { id: 104, author: 'ฉัน', content: 'ร้านปูเป็นอยู่ใกล้หาด บรรยากาศดีตอนพระอาทิตย์ตกดิน', created_at: new Date(Date.now() - 86400000 * 3).toISOString() }
+        ]
+      },
+      {
+        id: 4,
+        url: 'https://www.youtube.com/watch?v=sampleFukuoka',
+        title: 'เที่ยวฟุกุโอกะ คิวชู 4 วัน 3 คืน ตะลุยกินฮากาตะราเมน & ศาลเจ้าดาไซฟุ',
+        description: 'พาเที่ยว Fukuoka, Hakata, Yatai street food และช้อปปิ้ง Canal City',
+        platform: 'youtube',
+        category_id: 4,
+        tags: 'ญี่ปุ่น, ฟุกุโอกะ, ราเมน',
+        image_url: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&auto=format&fit=crop&q=60',
+        is_favorite: 1,
+        created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+        comments: [
+          { id: 105, author: 'ฉัน', content: 'พาสรถไฟใต้ดินซื้อที่สนามบินฟุกุโอกะได้เลย เดินทางง่ายมาก', created_at: new Date(Date.now() - 86400000 * 4).toISOString() }
+        ]
+      }
+    ];
+
+    // State
+    let categories = [];
+    let links = [];
+    let activeCategory = null;
+    let activePlatform = 'all';
+    let isFavoriteOnly = false;
+    let searchQuery = '';
+    let viewMode = 'grid';
+    let currentLinkForComments = null;
+
+    // Load initial data
+    function loadData() {
+      const storedCats = localStorage.getItem(STORAGE_KEY_CATS);
+      if (storedCats) {
+        try { categories = JSON.parse(storedCats); } catch(e) { categories = DEFAULT_CATEGORIES; }
+      } else {
+        categories = DEFAULT_CATEGORIES;
+        saveCategoriesToStorage();
+      }
+
+      const storedLinks = localStorage.getItem(STORAGE_KEY_LINKS);
+      if (storedLinks) {
+        try { links = JSON.parse(storedLinks); } catch(e) { links = DEFAULT_LINKS; }
+      } else {
+        links = DEFAULT_LINKS;
+        saveLinksToStorage();
+      }
+    }
+
+    function saveLinksToStorage() {
+      localStorage.setItem(STORAGE_KEY_LINKS, JSON.stringify(links));
+    }
+
+    function saveCategoriesToStorage() {
+      localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(categories));
+    }
+
+    // Initialize App
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      loadData();
+      renderPlatformChips();
+      renderCategoryPills();
+      populateCategorySelect();
+      renderLinks();
+      updateStats();
+    });
+
+    // Dark Mode handling
+    function initTheme() {
+      if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('darkModeIcon').textContent = '☀️';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('darkModeIcon').textContent = '🌙';
+      }
+    }
+
+    function toggleDarkMode() {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+        document.getElementById('darkModeIcon').textContent = '🌙';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+        document.getElementById('darkModeIcon').textContent = '☀️';
+      }
+    }
+
+    // Toast notification
+    function showToast(msg, icon = '✅') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // Render Category Pills
+    function renderCategoryPills() {
+      const container = document.getElementById('categoryPills');
+      const totalCount = links.length;
+      
+      let html = `
+        <button 
+          onclick="setCategory(null)" 
+          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all border ${
+            activeCategory === null 
+              ? 'bg-blue-600 text-white border-blue-600 shadow-sm' 
+              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+          }"
+        >
+          <span>🌟 ทั้งหมด</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded-full ${
+            activeCategory === null ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'
+          }">${totalCount}</span>
+        </button>
+      `;
+
+      categories.forEach(cat => {
+        const isActive = activeCategory === cat.id;
+        const count = links.filter(l => l.category_id === cat.id).length;
+        html += `
+          <button 
+            onclick="setCategory(${cat.id})" 
+            class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all border ${
+              isActive 
+                ? 'bg-blue-600 text-white border-blue-600 shadow-sm' 
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }"
+          >
+            <span>${cat.icon || '📌'} ${cat.name}</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded-full ${
+              isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'
+            }">${count}</span>
+          </button>
+        `;
+      });
+
+      html += `
+        <button 
+          onclick="openCategoryModal()" 
+          class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border border-dashed border-blue-300 dark:border-blue-700 hover:bg-blue-100 whitespace-nowrap transition"
+        >
+          <span>+ หมวดใหม่</span>
+        </button>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    // Render Platform Chips
+    function renderPlatformChips() {
+      const container = document.getElementById('platformChips');
+      let html = '';
+      for (const [key, plat] of Object.entries(PLATFORMS)) {
+        const isActive = activePlatform === key;
+        html += `
+          <button 
+            onclick="setPlatform('${key}')" 
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all border ${
+              isActive 
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-xs' 
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }"
+          >
+            <span>${plat.icon}</span>
+            <span>${plat.name}</span>
+          </button>
+        `;
+      }
+      container.innerHTML = html;
+    }
+
+    function populateCategorySelect(selectedId = null) {
+      const select = document.getElementById('linkCategory');
+      select.innerHTML = '<option value="">-- ไม่ระบุหมวดหมู่ --</option>';
+      categories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.id;
+        opt.textContent = `${cat.icon || '📌'} ${cat.name}`;
+        if (selectedId && selectedId === cat.id) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function setCategory(catId) {
+      activeCategory = catId;
+      renderCategoryPills();
+      renderLinks();
+      updateStats();
+    }
+
+    function setPlatform(plat) {
+      activePlatform = plat;
+      renderPlatformChips();
+      renderLinks();
+      updateStats();
+    }
+
+    function toggleFavoriteFilter() {
+      isFavoriteOnly = !isFavoriteOnly;
+      const btn = document.getElementById('favoriteFilterBtn');
+      if (isFavoriteOnly) {
+        btn.classList.add('bg-amber-100', 'text-amber-800', 'border-amber-300', 'dark:bg-amber-900/40', 'dark:text-amber-300', 'dark:border-amber-700');
+        btn.classList.remove('text-slate-600', 'dark:text-slate-300');
+      } else {
+        btn.classList.remove('bg-amber-100', 'text-amber-800', 'border-amber-300', 'dark:bg-amber-900/40', 'dark:text-amber-300', 'dark:border-amber-700');
+        btn.classList.add('text-slate-600', 'dark:text-slate-300');
+      }
+      renderLinks();
+      updateStats();
+    }
+
+    let searchTimer = null;
+    function handleSearch(val) {
+      searchQuery = val.toLowerCase().trim();
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (val.trim()) clearBtn.classList.remove('hidden');
+      else clearBtn.classList.add('hidden');
+
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        renderLinks();
+        updateStats();
+      }, 200);
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      searchQuery = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      renderLinks();
+      updateStats();
+    }
+
+    function resetFilters() {
+      activeCategory = null;
+      activePlatform = 'all';
+      isFavoriteOnly = false;
+      clearSearch();
+      renderCategoryPills();
+      renderPlatformChips();
+      renderLinks();
+      updateStats();
+    }
+
+    function setViewMode(mode) {
+      viewMode = mode;
+      const gridBtn = document.getElementById('viewGridBtn');
+      const listBtn = document.getElementById('viewListBtn');
+      if (mode === 'grid') {
+        gridBtn.className = 'px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100';
+        listBtn.className = 'px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium';
+        document.getElementById('linksContainer').className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5';
+      } else {
+        listBtn.className = 'px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100';
+        gridBtn.className = 'px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium';
+        document.getElementById('linksContainer').className = 'flex flex-col gap-4';
+      }
+      renderLinks();
+    }
+
+    function getDomain(url) {
+      try {
+        const u = new URL(url);
+        return u.hostname.replace('www.', '');
+      } catch {
+        return url;
+      }
+    }
+
+    function getYouTubeId(url) {
+      const m = url.match(/(?:v=|\/|youtu\.be\/|embed\/)([0-9A-Za-z_-]{11})/);
+      return m ? m[1] : null;
+    }
+
+    // Filter links based on criteria
+    function getFilteredLinks() {
+      return links.filter(link => {
+        if (activeCategory !== null && link.category_id !== activeCategory) return false;
+        if (activePlatform !== 'all' && link.platform !== activePlatform) return false;
+        if (isFavoriteOnly && !link.is_favorite) return false;
+
+        if (searchQuery) {
+          const matchTitle = (link.title || '').toLowerCase().includes(searchQuery);
+          const matchDesc = (link.description || '').toLowerCase().includes(searchQuery);
+          const matchUrl = (link.url || '').toLowerCase().includes(searchQuery);
+          const matchTags = (link.tags || '').toLowerCase().includes(searchQuery);
+          
+          const cat = categories.find(c => c.id === link.category_id);
+          const matchCat = cat && cat.name.toLowerCase().includes(searchQuery);
+
+          const matchComments = (link.comments || []).some(c => (c.content || '').toLowerCase().includes(searchQuery));
+
+          if (!matchTitle && !matchDesc && !matchUrl && !matchTags && !matchCat && !matchComments) {
+            return false;
+          }
+        }
+        return true;
+      }).sort((a, b) => {
+        if (b.is_favorite !== a.is_favorite) return (b.is_favorite || 0) - (a.is_favorite || 0);
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+    }
+
+    function updateStats() {
+      const filtered = getFilteredLinks();
+      const badge = document.getElementById('linksCountBadge');
+      badge.textContent = `พบ ${filtered.length} ลิ้งค์`;
+
+      const tagsContainer = document.getElementById('activeFilterTags');
+      tagsContainer.innerHTML = '';
+
+      if (activeCategory !== null) {
+        const cat = categories.find(c => c.id === activeCategory);
+        if (cat) {
+          tagsContainer.innerHTML += `
+            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              หมวด: ${cat.icon} ${cat.name}
+              <button onclick="setCategory(null)" class="hover:text-blue-900">✕</button>
+            </span>
+          `;
+        }
+      }
+
+      if (activePlatform !== 'all') {
+        const plat = PLATFORMS[activePlatform];
+        tagsContainer.innerHTML += `
+          <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
+            ${plat.icon} ${plat.name}
+            <button onclick="setPlatform('all')" class="hover:text-red-500">✕</button>
+          </span>
+        `;
+      }
+    }
+
+    // Render Links
+    function renderLinks() {
+      const container = document.getElementById('linksContainer');
+      const emptyState = document.getElementById('emptyState');
+      const filtered = getFilteredLinks();
+
+      if (!filtered || filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      emptyState.classList.remove('flex');
+
+      let html = '';
+      filtered.forEach(link => {
+        const plat = PLATFORMS[link.platform] || PLATFORMS.web;
+        const ytId = link.platform === 'youtube' ? getYouTubeId(link.url) : null;
+        const domain = getDomain(link.url);
+        const tags = (link.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+        const cat = categories.find(c => c.id === link.category_id);
+        const commentCount = (link.comments || []).length;
+
+        if (viewMode === 'list') {
+          html += `
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 p-4 shadow-xs hover:shadow-md transition flex flex-col md:flex-row gap-4 items-start justify-between">
+              <div class="flex items-start gap-3.5 flex-1 min-w-0">
+                ${link.image_url ? `
+                  <img src="${link.image_url}" alt="" class="w-20 h-20 rounded-xl object-cover flex-shrink-0 bg-slate-100 border border-slate-200 dark:border-slate-700">
+                ` : `
+                  <div class="w-16 h-16 rounded-xl flex-shrink-0 bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center text-2xl">
+                    ${plat.icon}
+                  </div>
+                `}
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap mb-1">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border ${plat.badgeBg}">
+                      ${plat.icon} ${plat.name}
+                    </span>
+                    ${cat ? `
+                      <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                        ${cat.icon || '📌'} ${cat.name}
+                      </span>
+                    ` : ''}
+                    <span class="text-xs text-slate-400">• ${domain}</span>
+                  </div>
+
+                  <a href="${link.url}" target="_blank" class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 line-clamp-1 text-base transition">
+                    ${link.title}
+                  </a>
+
+                  ${link.description ? `
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${link.description}</p>
+                  ` : ''}
+
+                  ${tags.length > 0 ? `
+                    <div class="flex items-center gap-1 mt-2 flex-wrap">
+                      ${tags.map(t => `<span class="text-[10px] bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">#${t}</span>`).join('')}
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              <!-- List View Actions -->
+              <div class="flex items-center gap-2 self-end md:self-center">
+                <button 
+                  onclick="toggleFavorite(${link.id})" 
+                  class="p-2 rounded-xl text-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                  title="${link.is_favorite ? 'ยกเลิกรายการโปรด' : 'ปักหมุดรายการโปรด'}"
+                >
+                  ${link.is_favorite ? '⭐' : '☆'}
+                </button>
+                <button 
+                  onclick="openCommentsModal(${link.id})" 
+                  class="flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 transition"
+                >
+                  <span>💬</span>
+                  <span>${commentCount}</span>
+                </button>
+                <button 
+                  onclick="copyToClipboard('${link.url}')" 
+                  class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs text-slate-600 dark:text-slate-300 transition"
+                  title="คัดลอกลิ้งค์"
+                >
+                  📋
+                </button>
+                <button 
+                  onclick="openEditLinkModal(${link.id})" 
+                  class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs text-slate-600 dark:text-slate-300 transition"
+                  title="แก้ไข"
+                >
+                  ✏️
+                </button>
+                <button 
+                  onclick="deleteLink(${link.id})" 
+                  class="p-2 rounded-xl border border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs text-red-600 dark:text-red-400 transition"
+                  title="ลบ"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          // Grid View Card
+          html += `
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col overflow-hidden group">
+              
+              <!-- Card Media / Thumbnail -->
+              <div class="relative w-full h-44 bg-slate-100 dark:bg-slate-700 overflow-hidden">
+                ${link.image_url ? `
+                  <img src="${link.image_url}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=500&auto=format&fit=crop&q=60';">
+                ` : `
+                  <div class="w-full h-full flex items-center justify-center bg-gradient-to-tr from-slate-200 to-indigo-100 dark:from-slate-800 dark:to-slate-700 text-4xl">
+                    ${plat.icon}
+                  </div>
+                `}
+
+                <!-- Platform Badge -->
+                <div class="absolute top-3 left-3 flex items-center gap-1.5 shadow-sm">
+                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg backdrop-blur-md bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-100 border border-white/20">
+                    <span>${plat.icon}</span>
+                    <span>${plat.name}</span>
+                  </span>
+                </div>
+
+                <!-- Favorite Star Toggle -->
+                <button 
+                  onclick="toggleFavorite(${link.id})" 
+                  class="absolute top-3 right-3 p-1.5 rounded-lg backdrop-blur-md bg-white/90 dark:bg-slate-900/90 hover:scale-110 active:scale-95 transition shadow-sm text-base"
+                  title="${link.is_favorite ? 'ยกเลิกรายการโปรด' : 'ปักหมุดรายการโปรด'}"
+                >
+                  ${link.is_favorite ? '⭐' : '🤍'}
+                </button>
+
+                <!-- YouTube Play Preview Button -->
+                ${ytId ? `
+                  <button 
+                    onclick="openYoutubePlayer('${ytId}', '${encodeURIComponent(link.title)}')"
+                    class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-red-600/90 text-white flex items-center justify-center hover:scale-110 active:scale-95 transition shadow-lg backdrop-blur-xs opacity-90 group-hover:opacity-100"
+                    title="เล่นวิดีโอตัวอย่าง"
+                  >
+                    <svg class="w-6 h-6 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </button>
+                ` : ''}
+
+                <!-- Category Pill -->
+                ${cat ? `
+                  <div class="absolute bottom-3 left-3">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md backdrop-blur-md bg-black/60 text-white shadow-xs">
+                      ${cat.icon || '📌'} ${cat.name}
+                    </span>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Card Content -->
+              <div class="p-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <div class="text-[11px] text-slate-400 font-medium mb-1 truncate">${domain}</div>
+                  <a 
+                    href="${link.url}" 
+                    target="_blank" 
+                    class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 line-clamp-2 text-sm leading-snug transition"
+                    title="${link.title}"
+                  >
+                    ${link.title}
+                  </a>
+
+                  ${link.description ? `
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                      ${link.description}
+                    </p>
+                  ` : ''}
+
+                  <!-- Tags -->
+                  ${tags.length > 0 ? `
+                    <div class="flex items-center gap-1 mt-3 flex-wrap">
+                      ${tags.map(t => `<span class="text-[10px] bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">#${t}</span>`).join('')}
+                    </div>
+                  ` : ''}
+                </div>
+
+                <!-- Comments Box & Quick Add -->
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60">
+                  <div class="flex items-center justify-between mb-2">
+                    <button 
+                      onclick="openCommentsModal(${link.id})" 
+                      class="flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      <span>💬 โน้ต & คอมเมนต์ (${commentCount})</span>
+                    </button>
+                    <span class="text-[10px] text-slate-400">คลิกเพื่อดูทั้งหมด</span>
+                  </div>
+
+                  <!-- Quick Inline Comment -->
+                  <div class="flex items-center gap-1.5">
+                    <input 
+                      type="text" 
+                      id="quickCommentInput_${link.id}" 
+                      placeholder="พิมพ์โน้ตด่วน..." 
+                      onkeypress="if(event.key === 'Enter') handleQuickComment(${link.id})"
+                      class="flex-1 px-2.5 py-1 text-xs rounded-lg bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none text-slate-800 dark:text-slate-200"
+                    >
+                    <button 
+                      onclick="handleQuickComment(${link.id})"
+                      class="p-1 px-2 text-xs bg-slate-200 dark:bg-slate-700 hover:bg-blue-600 hover:text-white rounded-lg text-slate-600 dark:text-slate-300 transition"
+                      title="ส่งโน้ต"
+                    >
+                      ↵
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Card Bottom Actions -->
+              <div class="px-4 py-2.5 bg-slate-50/70 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
+                <a 
+                  href="${link.url}" 
+                  target="_blank" 
+                  class="font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                >
+                  <span>เปิดดูลิ้งค์</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
+
+                <div class="flex items-center gap-1">
+                  <button 
+                    onclick="copyToClipboard('${link.url}')" 
+                    class="p-1.5 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    title="คัดลอกลิ้งค์"
+                  >
+                    📋
+                  </button>
+                  <button 
+                    onclick="openEditLinkModal(${link.id})" 
+                    class="p-1.5 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    title="แก้ไข"
+                  >
+                    ✏️
+                  </button>
+                  <button 
+                    onclick="deleteLink(${link.id})" 
+                    class="p-1.5 text-red-500 hover:text-red-700 rounded-md hover:bg-red-50 dark:hover:bg-red-900/30 transition"
+                    title="ลบลิ้งค์"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Modal Add / Edit Link
+    function openAddLinkModal() {
+      document.getElementById('modalTitle').textContent = 'เพิ่มลิ้งค์ใหม่';
+      document.getElementById('linkForm').reset();
+      document.getElementById('linkId').value = '';
+      document.getElementById('detectedPlatformBadge').innerHTML = '';
+      document.getElementById('initialCommentGroup').classList.remove('hidden');
+      populateCategorySelect(activeCategory);
+      document.getElementById('linkModal').classList.remove('hidden');
+    }
+
+    function openEditLinkModal(id) {
+      const link = links.find(l => l.id === id);
+      if (!link) return;
+
+      document.getElementById('modalTitle').textContent = 'แก้ไขลิ้งค์';
+      document.getElementById('linkId').value = link.id;
+      document.getElementById('linkUrl').value = link.url;
+      document.getElementById('linkTitle').value = link.title;
+      document.getElementById('linkDescription').value = link.description || '';
+      document.getElementById('linkPlatform').value = link.platform || 'web';
+      document.getElementById('linkImageUrl').value = link.image_url || '';
+      document.getElementById('linkTags').value = link.tags || '';
+      document.getElementById('linkFavorite').checked = !!link.is_favorite;
+      document.getElementById('initialCommentGroup').classList.add('hidden');
+      populateCategorySelect(link.category_id);
+
+      document.getElementById('linkModal').classList.remove('hidden');
+    }
+
+    function closeLinkModal() {
+      document.getElementById('linkModal').classList.add('hidden');
+    }
+
+    // Auto detect platform based on URL
+    function detectPlatformClient(url) {
+      if (!url) return 'web';
+      const u = url.toLowerCase();
+      if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
+      if (u.includes('tiktok.com')) return 'tiktok';
+      if (u.includes('facebook.com') || u.includes('fb.watch') || u.includes('fb.com')) return 'facebook';
+      if (u.includes('instagram.com')) return 'instagram';
+      if (u.includes('twitter.com') || u.includes('x.com')) return 'x';
+      if (u.includes('lemon8-app.com') || u.includes('lemon8')) return 'lemon8';
+      if (u.includes('maps.google') || u.includes('goo.gl/maps')) return 'maps';
+      return 'web';
+    }
+
+    function handleUrlInput(url) {
+      const plat = detectPlatformClient(url);
+      document.getElementById('linkPlatform').value = plat;
+
+      const pInfo = PLATFORMS[plat] || PLATFORMS.web;
+      document.getElementById('detectedPlatformBadge').innerHTML = `
+        <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">✨ ตรวจพบ: ${pInfo.icon} ${pInfo.name}</span>
+      `;
+
+      // Auto thumbnail for YouTube
+      if (plat === 'youtube') {
+        const ytId = getYouTubeId(url);
+        if (ytId && !document.getElementById('linkImageUrl').value) {
+          document.getElementById('linkImageUrl').value = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+        }
+      }
+    }
+
+    // Client-side metadata fetch (Using noembed / YouTube oEmbed)
+    async function fetchMetadataClient() {
+      const url = document.getElementById('linkUrl').value.trim();
+      if (!url) {
+        alert('กรุณากรอก URL ก่อนกดดึงข้อมูล');
+        return;
+      }
+
+      const spinner = document.getElementById('fetchSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const plat = detectPlatformClient(url);
+        if (plat === 'youtube') {
+          const ytId = getYouTubeId(url);
+          if (ytId) {
+            document.getElementById('linkImageUrl').value = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+          }
+          // Fetch YouTube title via noembed
+          const res = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(url)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.title && !document.getElementById('linkTitle').value) {
+              document.getElementById('linkTitle').value = data.title;
+            }
+          }
+          showToast('ดึงข้อมูล YouTube เรียบร้อย ✨');
+        } else {
+          // Try noembed for generic providers
+          const res = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(url)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.title && !document.getElementById('linkTitle').value) {
+              document.getElementById('linkTitle').value = data.title;
+            }
+            if (data.thumbnail_url && !document.getElementById('linkImageUrl').value) {
+              document.getElementById('linkImageUrl').value = data.thumbnail_url;
+            }
+            showToast('ดึงข้อมูลเว็บเรียบร้อย ✨');
+          } else {
+            showToast('กรุณากรอกชื่อเรื่องด้วยตนเอง', 'ℹ️');
+          }
+        }
+      } catch (err) {
+        showToast('กรุณากรอกชื่อเรื่องด้วยตนเอง', 'ℹ️');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    // Save Link (Create or Update)
+    function saveLink(e) {
+      e.preventDefault();
+      const idStr = document.getElementById('linkId').value;
+      const url = document.getElementById('linkUrl').value.trim();
+      const title = document.getElementById('linkTitle').value.trim();
+      const description = document.getElementById('linkDescription').value.trim();
+      const platform = document.getElementById('linkPlatform').value || detectPlatformClient(url);
+      const categoryIdVal = document.getElementById('linkCategory').value;
+      const category_id = categoryIdVal ? parseInt(categoryIdVal) : null;
+      let image_url = document.getElementById('linkImageUrl').value.trim();
+      const tags = document.getElementById('linkTags').value.trim();
+      const is_favorite = document.getElementById('linkFavorite').checked ? 1 : 0;
+      const initial_comment = document.getElementById('linkInitialComment')?.value.trim();
+
+      // Auto thumbnail for YouTube if not given
+      if (platform === 'youtube' && !image_url) {
+        const ytId = getYouTubeId(url);
+        if (ytId) image_url = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+      }
+
+      if (idStr) {
+        // Update
+        const id = parseInt(idStr);
+        const idx = links.findIndex(l => l.id === id);
+        if (idx !== -1) {
+          links[idx] = {
+            ...links[idx],
+            url,
+            title,
+            description,
+            platform,
+            category_id,
+            image_url,
+            tags,
+            is_favorite,
+            updated_at: new Date().toISOString()
+          };
+          showToast('อัปเดตลิ้งค์เรียบร้อย! ✨');
+        }
+      } else {
+        // Create
+        const newComments = [];
+        if (initial_comment) {
+          newComments.push({
+            id: Date.now() + 1,
+            author: 'ฉัน',
+            content: initial_comment,
+            created_at: new Date().toISOString()
+          });
+        }
+
+        const newLink = {
+          id: Date.now(),
+          url,
+          title,
+          description,
+          platform,
+          category_id,
+          image_url,
+          tags,
+          is_favorite,
+          created_at: new Date().toISOString(),
+          comments: newComments
+        };
+
+        links.unshift(newLink);
+        showToast('เพิ่มลิ้งค์สำเร็จ! 🎉');
+      }
+
+      saveLinksToStorage();
+      closeLinkModal();
+      renderCategoryPills();
+      renderLinks();
+      updateStats();
+    }
+
+    // Toggle Favorite
+    function toggleFavorite(id) {
+      const link = links.find(l => l.id === id);
+      if (!link) return;
+      link.is_favorite = link.is_favorite ? 0 : 1;
+      saveLinksToStorage();
+      renderLinks();
+      updateStats();
+      showToast(link.is_favorite ? 'ปักหมุดรายการโปรดแล้ว ⭐' : 'ยกเลิกรายการโปรดแล้ว');
+    }
+
+    // Delete Link
+    function deleteLink(id) {
+      if (!confirm('คุณต้องการลบลิ้งค์นี้ใช่หรือไม่?')) return;
+      links = links.filter(l => l.id !== id);
+      saveLinksToStorage();
+      renderCategoryPills();
+      renderLinks();
+      updateStats();
+      showToast('ลบลิ้งค์สำเร็จ', '🗑️');
+    }
+
+    // Quick Comment from Card
+    function handleQuickComment(linkId) {
+      const input = document.getElementById(`quickCommentInput_${linkId}`);
+      const content = input.value.trim();
+      if (!content) return;
+
+      const link = links.find(l => l.id === linkId);
+      if (!link) return;
+
+      if (!link.comments) link.comments = [];
+      link.comments.push({
+        id: Date.now(),
+        author: 'ฉัน',
+        content: content,
+        created_at: new Date().toISOString()
+      });
+
+      saveLinksToStorage();
+      input.value = '';
+      showToast('บันทึกโน้ตสำเร็จ 💬');
+      renderLinks();
+    }
+
+    // COMMENTS MODAL
+    function openCommentsModal(linkId) {
+      const link = links.find(l => l.id === linkId);
+      if (!link) return;
+      currentLinkForComments = link;
+
+      document.getElementById('commentLinkId').value = link.id;
+      document.getElementById('commentModalLinkTitle').textContent = link.title;
+      document.getElementById('commentModalLinkUrl').href = link.url;
+      document.getElementById('commentModalLinkUrlText').textContent = link.url;
+
+      const plat = PLATFORMS[link.platform] || PLATFORMS.web;
+      document.getElementById('commentModalPlatformBadge').innerHTML = `
+        <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border ${plat.badgeBg}">
+          ${plat.icon} ${plat.name}
+        </span>
+      `;
+
+      renderCommentsTimeline(link.comments || []);
+      document.getElementById('commentsModal').classList.remove('hidden');
+    }
+
+    function closeCommentsModal() {
+      document.getElementById('commentsModal').classList.add('hidden');
+      currentLinkForComments = null;
+    }
+
+    function renderCommentsTimeline(comments) {
+      const list = document.getElementById('commentsList');
+      if (!comments || comments.length === 0) {
+        list.innerHTML = `
+          <div class="py-12 text-center text-slate-400 text-sm">
+            <span>💬 ยังไม่มีโน้ตหรือความคิดเห็นสำหรับลิ้งค์นี้</span>
+            <p class="text-xs text-slate-500 mt-1">พิมพ์ในช่องด้านล่างเพื่อจดจำข้อมูล เช่น เมนูแนะนำ, เวลาเปิดปิด, ค่าเข้าชม</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      comments.forEach(c => {
+        const dateStr = new Date(c.created_at).toLocaleString('th-TH', { 
+          dateStyle: 'medium', 
+          timeStyle: 'short' 
+        });
+
+        html += `
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200/80 dark:border-slate-700 flex items-start justify-between gap-3 group">
+            <div class="flex items-start gap-2.5">
+              <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                ${(c.author || 'ฉัน')[0]}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">${c.author || 'ฉัน'}</span>
+                  <span class="text-[10px] text-slate-400">${dateStr}</span>
+                </div>
+                <p class="text-sm text-slate-700 dark:text-slate-300 mt-1 leading-relaxed whitespace-pre-wrap">${c.content}</p>
+              </div>
+            </div>
+            <button 
+              onclick="deleteComment(${c.id})" 
+              class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 p-1 text-xs transition"
+              title="ลบคอมเมนต์"
+            >
+              ✕
+            </button>
+          </div>
+        `;
+      });
+
+      list.innerHTML = html;
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function submitComment(e) {
+      e.preventDefault();
+      const content = document.getElementById('commentContent').value.trim();
+      if (!content || !currentLinkForComments) return;
+
+      if (!currentLinkForComments.comments) currentLinkForComments.comments = [];
+      currentLinkForComments.comments.push({
+        id: Date.now(),
+        author: 'ฉัน',
+        content,
+        created_at: new Date().toISOString()
+      });
+
+      saveLinksToStorage();
+      document.getElementById('commentContent').value = '';
+      showToast('เพิ่มโน้ตสำเร็จ 💬');
+
+      renderCommentsTimeline(currentLinkForComments.comments);
+      renderLinks();
+    }
+
+    function deleteComment(commentId) {
+      if (!currentLinkForComments) return;
+      if (!confirm('ต้องการลบคอมเมนต์นี้ใช่หรือไม่?')) return;
+
+      currentLinkForComments.comments = currentLinkForComments.comments.filter(c => c.id !== commentId);
+      saveLinksToStorage();
+      showToast('ลบคอมเมนต์แล้ว', '🗑️');
+
+      renderCommentsTimeline(currentLinkForComments.comments);
+      renderLinks();
+    }
+
+    // CATEGORY MODAL & MANAGEMENT
+    function openCategoryModal() {
+      renderCategoryManagerList();
+      document.getElementById('categoryModal').classList.remove('hidden');
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.add('hidden');
+    }
+
+    function setNewCatIcon(emoji) {
+      document.getElementById('newCatIcon').value = emoji;
+    }
+
+    function renderCategoryManagerList() {
+      const container = document.getElementById('categoryManagerList');
+      let html = '';
+      categories.forEach(cat => {
+        const count = links.filter(l => l.category_id === cat.id).length;
+        html += `
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200/80 dark:border-slate-700">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">${cat.icon || '📌'}</span>
+              <div>
+                <span class="text-sm font-medium text-slate-800 dark:text-slate-200">${cat.name}</span>
+                <span class="text-xs text-slate-400 ml-1">(${count} ลิ้งค์)</span>
+              </div>
+            </div>
+            <button 
+              onclick="deleteCategory(${cat.id})" 
+              class="text-xs text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition"
+              title="ลบหมวดหมู่"
+            >
+              ลบ
+            </button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function submitCategory(e) {
+      e.preventDefault();
+      const name = document.getElementById('newCatName').value.trim();
+      const icon = document.getElementById('newCatIcon').value.trim() || '📌';
+      const color = document.getElementById('newCatColor').value;
+      if (!name) return;
+
+      if (categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+        showToast('ชื่อหมวดหมู่นี้มีอยู่แล้ว', '⚠️');
+        return;
+      }
+
+      const newCat = {
+        id: Date.now(),
+        name,
+        icon,
+        color
+      };
+
+      categories.push(newCat);
+      saveCategoriesToStorage();
+
+      document.getElementById('newCatName').value = '';
+      showToast('เพิ่มหมวดหมู่สำเร็จ ✨');
+      renderCategoryPills();
+      populateCategorySelect();
+      renderCategoryManagerList();
+    }
+
+    function deleteCategory(id) {
+      if (!confirm('คุณต้องการลบหมวดหมู่นี้ใช่หรือไม่? (ลิ้งค์ในหมวดนี้จะไม่ถูกลบ แต่จะเปลี่ยนเป็นไม่มีหมวด)')) return;
+      categories = categories.filter(c => c.id !== id);
+      links.forEach(l => {
+        if (l.category_id === id) l.category_id = null;
+      });
+
+      saveCategoriesToStorage();
+      saveLinksToStorage();
+
+      if (activeCategory === id) activeCategory = null;
+
+      showToast('ลบหมวดหมู่เรียบร้อย', '🗑️');
+      renderCategoryPills();
+      populateCategorySelect();
+      renderCategoryManagerList();
+      renderLinks();
+      updateStats();
+    }
+
+    // YOUTUBE PLAYER MODAL
+    function openYoutubePlayer(ytId, titleEncoded) {
+      const modal = document.getElementById('youtubeModal');
+      const iframe = document.getElementById('ytIframe');
+      const title = document.getElementById('ytModalTitle');
+      title.textContent = decodeURIComponent(titleEncoded);
+      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+      modal.classList.remove('hidden');
+    }
+
+    function closeYoutubeModal() {
+      const modal = document.getElementById('youtubeModal');
+      const iframe = document.getElementById('ytIframe');
+      iframe.src = '';
+      modal.classList.add('hidden');
+    }
+
+    // BACKUP & RESTORE
+    function openBackupModal() {
+      document.getElementById('backupModal').classList.remove('hidden');
+    }
+
+    function closeBackupModal() {
+      document.getElementById('backupModal').classList.add('hidden');
+    }
+
+    function downloadBackup() {
+      const backupData = {
+        version: 1,
+        exported_at: new Date().toISOString(),
+        categories: categories,
+        links: links
+      };
+      const jsonStr = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `linkhub_backup_${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('ดาวน์โหลดไฟล์สำรองข้อมูลสำเร็จ 💾');
+    }
+
+    function uploadBackup() {
+      const input = document.getElementById('importFileInput');
+      if (!input.files || input.files.length === 0) {
+        alert('กรุณาเลือกไฟล์ JSON ก่อน');
+        return;
+      }
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const json = JSON.parse(e.target.result);
+          if (json.categories && Array.isArray(json.categories)) {
+            categories = json.categories;
+            saveCategoriesToStorage();
+          }
+          if (json.links && Array.isArray(json.links)) {
+            links = json.links;
+            saveLinksToStorage();
+          }
+          showToast('นำเข้าข้อมูลสำเร็จแล้ว! 🎉');
+          closeBackupModal();
+          renderCategoryPills();
+          populateCategorySelect();
+          renderLinks();
+          updateStats();
+        } catch (err) {
+          showToast('ไฟล์ JSON ไม่ถูกต้อง', '❌');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Helper: Copy to Clipboard
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('คัดลอกลิ้งค์ไปยังคลิปบอร์ดแล้ว! 📋');
+      }).catch(() => {
+        showToast('ไม่สามารถคัดลอกได้', '❌');
+      });
+    }
+  </script>
+</body>
+</html>
