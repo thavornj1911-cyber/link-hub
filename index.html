@@ -49,10 +49,10 @@
   <!-- TOP HEADER -->
   <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 gap-3">
+      <div class="flex items-center justify-between h-16 gap-2.5">
         
         <!-- Logo & Title -->
-        <div class="flex items-center gap-2.5 cursor-pointer flex-shrink-0" onclick="resetFilters()">
+        <div class="flex items-center gap-2 cursor-pointer flex-shrink-0" onclick="resetFilters()">
           <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
@@ -60,34 +60,32 @@
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <h1 class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-300">
+              <h1 class="font-bold text-base sm:text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-300">
                 LinkHub
               </h1>
-              <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-medium">Online</span>
+              <span id="cloudStatusBadge" class="text-[9px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">Local</span>
             </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">รวมลิ้งค์โปรด • ของกิน • แพลนเที่ยว</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:block">รวมลิ้งค์โปรด • ของกิน • แพลนเที่ยว</p>
           </div>
         </div>
 
         <!-- Search Bar (Live) -->
-        <div class="flex-1 max-w-md mx-1">
+        <div class="flex-1 max-w-sm mx-1">
           <div class="relative">
             <input 
               type="text" 
               id="searchInput" 
               oninput="handleSearch(this.value)" 
-              placeholder="ค้นหาชื่อ, แท็ก, หรือโน้ต..." 
-              class="w-full pl-9 pr-8 py-2 rounded-xl text-xs sm:text-sm bg-slate-100 dark:bg-slate-700/60 border border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none transition"
+              placeholder="ค้นหาชื่อ, แท็ก..." 
+              class="w-full pl-8 pr-7 py-1.5 rounded-xl text-xs sm:text-sm bg-slate-100 dark:bg-slate-700/60 border border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none transition"
             >
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
-            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
+            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
           </div>
         </div>
@@ -95,44 +93,48 @@
         <!-- Action Buttons -->
         <div class="flex items-center gap-1.5 flex-shrink-0">
           
+          <!-- Sync Button (Prominent) -->
+          <button 
+            onclick="openSyncModal()"
+            title="ซิงค์ข้อมูลข้ามเครื่อง (คอม <-> มือถือ)"
+            class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-800 text-xs font-semibold transition"
+          >
+            <span>📲</span>
+            <span class="hidden sm:inline">ซิงค์ข้ามเครื่อง</span>
+          </button>
+
           <!-- Add Link Button -->
           <button 
             onclick="openAddLinkModal()"
-            class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-95 transition"
+            class="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-95 transition"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            <span class="hidden sm:inline">เพิ่มลิ้งค์ใหม่</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span class="hidden sm:inline">เพิ่มลิ้งค์</span>
           </button>
 
           <!-- Manage Categories Button -->
           <button 
             onclick="openCategoryModal()" 
             title="จัดการหมวดหมู่"
-            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 text-slate-600 dark:text-slate-300 transition"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-            </svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           </button>
 
-          <!-- Backup / Import / Reset Button -->
+          <!-- Settings & Backup Button -->
           <button 
             onclick="openBackupModal()" 
-            title="สำรอง & กู้คืนข้อมูล / ซิงค์ข้อมูล"
-            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
+            title="ตั้งค่า & สำรองข้อมูล"
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 text-slate-600 dark:text-slate-300 transition"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-            </svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           </button>
 
           <!-- Dark Mode Toggle -->
           <button 
             onclick="toggleDarkMode()" 
             title="สลับโหมดมืด/สว่าง"
-            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
+            class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 text-slate-600 dark:text-slate-300 transition"
           >
             <span id="darkModeIcon" class="text-sm">🌙</span>
           </button>
@@ -143,34 +145,41 @@
     </div>
   </header>
 
+  <!-- CLOUD SYNC BANNER (Shown if Firebase is active) -->
+  <div id="cloudActiveBar" class="hidden bg-emerald-50 dark:bg-emerald-950/40 border-b border-emerald-200 dark:border-emerald-800/60 px-4 py-1.5 text-xs text-emerald-800 dark:text-emerald-300 flex items-center justify-between">
+    <div class="flex items-center gap-1.5">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span>☁️ <b>เชื่อมต่อคลาวด์แล้ว:</b> ข้อมูลจะซิงค์ตรงกันทุกเครื่องอัตโนมัติ</span>
+    </div>
+    <button onclick="syncFromCloud(true)" class="text-emerald-700 dark:text-emerald-300 underline font-semibold hover:text-emerald-900">
+      🔄 ซิงค์ข้อมูลเดี๋ยวนี้
+    </button>
+  </div>
+
   <!-- MAIN CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-1 w-full flex flex-col gap-4">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex-1 w-full flex flex-col gap-3.5">
 
     <!-- CATEGORIES BAR (Horizontal Scrollable) -->
-    <div class="flex flex-col gap-1.5">
+    <div class="flex flex-col gap-1">
       <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
         <span>หมวดหมู่ทริป & หัวข้อ</span>
         <button onclick="openCategoryModal()" class="text-blue-600 dark:text-blue-400 hover:underline normal-case font-normal text-xs">
-          + จัดการ / เพิ่มหมวด
+          + จัดการหมวด
         </button>
       </div>
-      <div id="categoryPills" class="flex items-center gap-1.5 overflow-x-auto pb-1.5 custom-scrollbar">
-        <!-- Rendered by JS -->
-      </div>
+      <div id="categoryPills" class="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar"></div>
     </div>
 
     <!-- PLATFORM FILTER BAR (Chips) -->
-    <div class="flex flex-col gap-1.5">
+    <div class="flex flex-col gap-1">
       <div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
         แพลตฟอร์มโซเชียลมีเดีย
       </div>
-      <div id="platformChips" class="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar">
-        <!-- Rendered by JS -->
-      </div>
+      <div id="platformChips" class="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar"></div>
     </div>
 
     <!-- STATS & CONTROLS BAR -->
-    <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 text-xs sm:text-sm">
+    <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 text-xs sm:text-sm">
       <div class="flex items-center gap-2">
         <span id="linksCountBadge" class="font-medium text-slate-700 dark:text-slate-300">0 ลิ้งค์</span>
         <span id="activeFilterTags" class="flex items-center gap-1 flex-wrap"></span>
@@ -189,10 +198,10 @@
 
         <!-- View mode: Grid / List -->
         <div class="flex items-center bg-slate-200 dark:bg-slate-700/70 p-0.5 rounded-lg text-xs">
-          <button id="viewGridBtn" onclick="setViewMode('grid')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100">
+          <button id="viewGridBtn" onclick="setViewMode('grid')" class="px-2 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100">
             กริด
           </button>
-          <button id="viewListBtn" onclick="setViewMode('list')" class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium">
+          <button id="viewListBtn" onclick="setViewMode('list')" class="px-2 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium">
             แถว
           </button>
         </div>
@@ -200,9 +209,7 @@
     </div>
 
     <!-- LINKS CONTAINER -->
-    <div id="linksContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <!-- Rendered by JS -->
-    </div>
+    <div id="linksContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
     <!-- EMPTY STATE -->
     <div id="emptyState" class="hidden flex-col items-center justify-center py-16 px-4 text-center">
@@ -211,17 +218,128 @@
       </div>
       <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">ยังไม่มีลิ้งค์ในหน้านี้</h3>
       <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
-        กดปุ่ม <b>"เพิ่มลิ้งค์ใหม่"</b> ด้านล่างเพื่อเริ่มวางลิ้งค์ Facebook, TikTok, YouTube หรือเว็บที่คุณต้องการเก็บไว้ได้เลย!
+        กดปุ่ม <b>"เพิ่มลิ้งค์ใหม่"</b> เพื่อเริ่มวางลิ้งค์ หรือกด <b>"ซิงค์ข้ามเครื่อง"</b> หากคุณมีลิ้งค์ที่เคยบันทึกไว้ในคอม!
       </p>
-      <button 
-        onclick="openAddLinkModal()"
-        class="mt-4 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-medium rounded-xl shadow-md transition"
-      >
-        + วางลิ้งค์แรกเลย
-      </button>
+      <div class="flex items-center gap-2 mt-4">
+        <button 
+          onclick="openAddLinkModal()"
+          class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-medium rounded-xl shadow-md transition"
+        >
+          + วางลิ้งค์แรกเลย
+        </button>
+        <button 
+          onclick="openSyncModal()"
+          class="px-3.5 py-2 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs sm:text-sm font-medium rounded-xl transition"
+        >
+          📲 ดึงข้อมูลจากเครื่องอื่น
+        </button>
+      </div>
     </div>
 
   </main>
+
+  <!-- MODAL: SYNC ACROSS DEVICES (QR Code, Secret Link, Cloud) -->
+  <div id="syncModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-lg w-full p-5 sm:p-6 my-6">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">📲 ซิงค์ข้อมูลข้ามเครื่อง</h3>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">ส่งข้อมูลลิ้งค์และโน้ตระหว่าง คอมพิวเตอร์ <-> มือถือ</p>
+        </div>
+        <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold p-1">✕</button>
+      </div>
+
+      <div class="mt-4 space-y-4">
+        
+        <!-- OPTION 1: INSTANT SYNC LINK / QR CODE (ZERO SETUP) -->
+        <div class="p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
+              <span>⚡ วิธีที่ 1: ซิงค์ด่วนผ่านลิงก์ / QR Code (ไม่ต้องตั้งค่าอะไรเลย)</span>
+            </h4>
+          </div>
+          <p class="text-xs text-blue-800/80 dark:text-blue-300/80 leading-relaxed">
+            กดปุ่มด้านล่างเพื่อคัดลอก <b>"ลิงก์ซิงค์ข้อมูล"</b> แล้วส่งเข้าแชทตัวเอง (Messenger หรือ LINE) จากนั้นใช้มือถือแตะเปิดลิงก์ ข้อมูลจากคอมจะถูกนำเข้ามือถือทันที!
+          </p>
+          
+          <button 
+            onclick="copySyncLink()"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition flex items-center justify-center gap-1.5"
+          >
+            <span>📋 คัดลอกลิงก์ซิงค์ข้อมูล (ส่งเข้ามือถือ)</span>
+          </button>
+
+          <!-- Toggle QR Code -->
+          <div class="pt-1 text-center">
+            <button onclick="toggleQrCode()" class="text-xs text-blue-600 dark:text-blue-400 underline font-medium">
+              หรือกดเพื่อแสดง QR Code สแกนด้วยกล้องมือถือ
+            </button>
+            <div id="qrCodeContainer" class="hidden mt-3 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-200">
+              <img id="qrCodeImage" src="" alt="QR Code" class="w-48 h-48">
+              <span class="text-[10px] text-slate-500 mt-2">ยกกล้อง iPhone/Android ขึ้นมาสแกนเพื่อเปิดบนมือถือ</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPTION 2: PERMANENT CLOUD SYNC (FIREBASE REALTIME DB) -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <span>☁️ วิธีที่ 2: เชื่อมต่อคลาวด์ฟรี (ข้อมูลตรงกันอัตโนมัติตลอด 24 ชม.)</span>
+            </h4>
+            <span id="cloudStatusTag" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-300 font-medium">ยังไม่ต่อ</span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            เชื่อมต่อกับ Google Firebase Realtime Database (ฟรีตลอดชีพ) บันทึกในคอมก็จะเด้งขึ้นในมือถือทันที ไม่ต้องสแกนหรือส่งลิงก์อีกต่อไป!
+          </p>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">
+              Firebase Database URL:
+            </label>
+            <input 
+              type="url" 
+              id="firebaseUrlInput" 
+              placeholder="https://xxxx-default-rtdb.firebaseio.com" 
+              class="w-full px-3 py-1.5 rounded-xl text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 focus:border-indigo-500 outline-none"
+            >
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button 
+              onclick="saveFirebaseConfig()" 
+              class="flex-1 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-medium transition"
+            >
+              บันทึกและเชื่อมต่อคลาวด์
+            </button>
+            <button 
+              onclick="shareCloudSetupLink()" 
+              id="btnShareCloud"
+              class="hidden px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-medium transition"
+              title="ส่งลิงก์ให้มือถือเปิดต่อคลาวด์อัตโนมัติ"
+            >
+              แชร์ลิงก์เปิดบนมือถือ
+            </button>
+          </div>
+
+          <!-- Guide toggle -->
+          <div class="pt-1">
+            <button onclick="toggleFirebaseGuide()" class="text-[11px] text-slate-500 dark:text-slate-400 underline">
+              👉 วิธีสร้าง Firebase Database URL ฟรีใน 1 นาที (คลิกดู)
+            </button>
+            <div id="firebaseGuide" class="hidden mt-2 p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 text-[11px] text-slate-600 dark:text-slate-300 space-y-1">
+              <div>1. ไปที่ <a href="https://console.firebase.google.com" target="_blank" class="text-blue-600 underline">console.firebase.google.com</a> กด <b>Create a project</b></div>
+              <div>2. เมนูซ้ายกด <b>Build</b> > <b>Realtime Database</b> > กด <b>Create Database</b></div>
+              <div>3. ตรง Security rules เลือก <b>Start in test mode</b> > กด Enable</div>
+              <div>4. คัดลอก URL ด้านบน (เช่น <code>https://my-app-default-rtdb.firebaseio.com</code>) มาวางในช่องด้านบนนี้ได้เลย!</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- MODAL: ADD / EDIT LINK -->
   <div id="linkModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
@@ -231,7 +349,7 @@
         <button onclick="closeLinkModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold p-1">✕</button>
       </div>
 
-      <form id="linkForm" onsubmit="saveLink(event)" class="mt-4 space-y-3.5">
+      <form id="linkForm" onsubmit="saveLink(event)" class="mt-4 space-y-3">
         <input type="hidden" id="linkId">
 
         <!-- URL Input & Auto Fetch -->
@@ -263,7 +381,7 @@
         </div>
 
         <!-- Platform & Category Row -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
               แพลตฟอร์ม
@@ -289,9 +407,7 @@
                 + เพิ่มหมวด
               </button>
             </div>
-            <select id="linkCategory" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none">
-              <!-- Dynamically populated -->
-            </select>
+            <select id="linkCategory" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"></select>
           </div>
         </div>
 
@@ -304,7 +420,7 @@
             type="text" 
             id="linkTitle" 
             required 
-            placeholder="เช่น รีวิวหมี่โคราชร้านเด็ด หรือ คาเฟ่เขาใหญ่" 
+            placeholder="เช่น รีวิวหมี่โคราช หรือ คาเฟ่เขาใหญ่" 
             class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
           >
         </div>
@@ -338,7 +454,7 @@
         <!-- Tags -->
         <div>
           <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">
-            แท็ก (คั่นด้วยจุลภาค เช่น ของกิน, คาเฟ่, ริมทะเล)
+            แท็ก (คั่นด้วยจุลภาค เช่น ของกิน, คาเฟ่)
           </label>
           <input 
             type="text" 
@@ -411,9 +527,7 @@
       </div>
 
       <!-- Comments Timeline List -->
-      <div id="commentsList" class="flex-1 overflow-y-auto py-3 space-y-2.5 custom-scrollbar">
-        <!-- Rendered by JS -->
-      </div>
+      <div id="commentsList" class="flex-1 overflow-y-auto py-3 space-y-2.5 custom-scrollbar"></div>
 
       <!-- Add New Comment Box -->
       <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
@@ -453,7 +567,6 @@
       <form onsubmit="submitCategory(event)" class="mt-3.5 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 space-y-2.5">
         <h4 class="text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">สร้างหมวดหมู่ใหม่</h4>
         <div class="grid grid-cols-12 gap-2">
-          <!-- Icon Picker -->
           <div class="col-span-3 sm:col-span-2">
             <label class="block text-[10px] text-slate-500 mb-0.5">ไอคอน</label>
             <input 
@@ -464,7 +577,6 @@
               class="w-full text-center py-1.5 px-1 rounded-lg text-base bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 outline-none"
             >
           </div>
-          <!-- Name -->
           <div class="col-span-6 sm:col-span-7">
             <label class="block text-[10px] text-slate-500 mb-0.5">ชื่อหมวดหมู่</label>
             <input 
@@ -475,9 +587,8 @@
               class="w-full py-1.5 px-2.5 rounded-lg text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 focus:border-blue-500 outline-none"
             >
           </div>
-          <!-- Color -->
           <div class="col-span-3 sm:col-span-3">
-            <label class="block text-[10px] text-slate-500 mb-0.5">สีประจำหมวด</label>
+            <label class="block text-[10px] text-slate-500 mb-0.5">สี</label>
             <input 
               type="color" 
               id="newCatColor" 
@@ -485,20 +596,6 @@
               class="w-full h-8 p-0.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 cursor-pointer"
             >
           </div>
-        </div>
-
-        <!-- Quick emoji buttons -->
-        <div class="flex items-center gap-1.5 flex-wrap pt-0.5 text-sm">
-          <span class="text-[10px] text-slate-400 mr-1">แนะนำ:</span>
-          <button type="button" onclick="setNewCatIcon('🍜')" class="hover:scale-125 transition">🍜</button>
-          <button type="button" onclick="setNewCatIcon('⛰️')" class="hover:scale-125 transition">⛰️</button>
-          <button type="button" onclick="setNewCatIcon('🏖️')" class="hover:scale-125 transition">🏖️</button>
-          <button type="button" onclick="setNewCatIcon('✈️')" class="hover:scale-125 transition">✈️</button>
-          <button type="button" onclick="setNewCatIcon('☕')" class="hover:scale-125 transition">☕</button>
-          <button type="button" onclick="setNewCatIcon('🏨')" class="hover:scale-125 transition">🏨</button>
-          <button type="button" onclick="setNewCatIcon('🛍️')" class="hover:scale-125 transition">🛍️</button>
-          <button type="button" onclick="setNewCatIcon('🚗')" class="hover:scale-125 transition">🚗</button>
-          <button type="button" onclick="setNewCatIcon('🍱')" class="hover:scale-125 transition">🍱</button>
         </div>
 
         <button 
@@ -512,9 +609,7 @@
       <!-- Category List -->
       <div class="mt-3">
         <h4 class="text-xs font-semibold uppercase text-slate-600 dark:text-slate-300 mb-1.5">หมวดหมู่ที่มีอยู่</h4>
-        <div id="categoryManagerList" class="space-y-1.5 max-h-52 overflow-y-auto custom-scrollbar">
-          <!-- Rendered by JS -->
-        </div>
+        <div id="categoryManagerList" class="space-y-1.5 max-h-52 overflow-y-auto custom-scrollbar"></div>
       </div>
     </div>
   </div>
@@ -536,7 +631,7 @@
   <div id="backupModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-md w-full p-5 sm:p-6 my-6">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
-        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">จัดการข้อมูล & สำรองข้อมูล</h3>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">ตั้งค่า & สำรองข้อมูล</h3>
         <button onclick="closeBackupModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold p-1">✕</button>
       </div>
 
@@ -546,7 +641,7 @@
         <div class="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50">
           <h4 class="font-bold text-red-700 dark:text-red-400 mb-1">ล้างลิ้งค์ทั้งหมด (เริ่มต้นใหม่)</h4>
           <p class="text-xs text-red-600/80 dark:text-red-400/80 mb-2.5">
-            หากมีลิ้งค์ตัวอย่างค้างอยู่ หรือต้องการลบลิ้งค์ออกให้หมด สามารถกดปุ่มนี้เพื่อล้างข้อมูลได้ทันที
+            ต้องการลบลิ้งค์ออกให้หมดจนเหลือ 0 สามารถกดปุ่มนี้ได้ทันที
           </p>
           <button 
             onclick="promptClearAllLinks()" 
@@ -559,7 +654,6 @@
         <!-- Download JSON -->
         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700">
           <h4 class="font-semibold text-slate-800 dark:text-slate-200 mb-1">ดาวน์โหลดข้อมูลสำรอง (JSON)</h4>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2.5">บันทึกลิ้งค์และโน้ตทั้งหมดไว้ในไฟล์ เพื่อส่งไปเปิดในเครื่องอื่น</p>
           <button 
             onclick="downloadBackup()" 
             class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5"
@@ -585,7 +679,7 @@
     </div>
   </div>
 
-  <!-- IN-APP CONFIRMATION MODAL (Replaces window.confirm which fails in Messenger/LINE) -->
+  <!-- IN-APP CONFIRM MODAL -->
   <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-sm w-full p-5 text-center">
       <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center text-2xl">
@@ -620,11 +714,12 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT: Standalone Client-Side App -->
+  <!-- JAVASCRIPT: Standalone Client-Side App with Cloud & Link Sync -->
   <script>
     // Storage Keys
     const STORAGE_KEY_LINKS = 'linkhub_links_v2';
     const STORAGE_KEY_CATS = 'linkhub_categories_v2';
+    const STORAGE_KEY_FIREBASE = 'linkhub_firebase_url';
 
     // Platform definitions
     const PLATFORMS = {
@@ -639,7 +734,7 @@
       web: { name: 'เว็บไซต์', icon: '🔗', color: '#64748B', badgeBg: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700' }
     };
 
-    // Default Categories (Keep the requested topics ready)
+    // Default Categories
     const DEFAULT_CATEGORIES = [
       { id: 1, name: 'ของกินโคราช', icon: '🍜', color: '#F97316' },
       { id: 2, name: 'เที่ยวเขาใหญ่', icon: '⛰️', color: '#10B981' },
@@ -649,7 +744,6 @@
       { id: 6, name: 'ทั่วไป', icon: '📌', color: '#6B7280' }
     ];
 
-    // Clean Start: Default to EMPTY array so user's own links are ready
     const DEFAULT_LINKS = [];
 
     // State
@@ -662,13 +756,20 @@
     let viewMode = 'grid';
     let currentLinkForComments = null;
     let pendingConfirmAction = null;
+    let firebaseUrl = localStorage.getItem(STORAGE_KEY_FIREBASE) || '';
 
     // Load Data
     function loadData() {
-      // Clear legacy v1 sample data if exists
-      localStorage.removeItem('linkhub_links');
-      localStorage.removeItem('linkhub_categories');
+      // 1. Check URL parameters for Cloud setup (?db=https://...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const dbParam = urlParams.get('db');
+      if (dbParam) {
+        firebaseUrl = dbParam.trim();
+        localStorage.setItem(STORAGE_KEY_FIREBASE, firebaseUrl);
+        showToast('เชื่อมต่อคลาวด์จากลิงก์เรียบร้อย! ☁️');
+      }
 
+      // 2. Load LocalStorage first
       const storedCats = localStorage.getItem(STORAGE_KEY_CATS);
       if (storedCats) {
         try { categories = JSON.parse(storedCats); } catch(e) { categories = DEFAULT_CATEGORIES; }
@@ -684,14 +785,190 @@
         links = DEFAULT_LINKS;
         saveLinksToStorage();
       }
+
+      // 3. Check URL hash for Instant Link Sync (#sync=...)
+      checkUrlSync();
+
+      // 4. If Cloud (Firebase) is set up, sync from cloud immediately
+      if (firebaseUrl) {
+        updateCloudUI(true);
+        syncFromCloud();
+      } else {
+        updateCloudUI(false);
+      }
     }
 
     function saveLinksToStorage() {
       localStorage.setItem(STORAGE_KEY_LINKS, JSON.stringify(links));
+      syncToCloud();
     }
 
     function saveCategoriesToStorage() {
       localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(categories));
+      syncToCloud();
+    }
+
+    // CLOUD SYNC LOGIC (Firebase Realtime Database REST API)
+    async function syncFromCloud(showFeedback = false) {
+      if (!firebaseUrl) return;
+      try {
+        const cleanUrl = firebaseUrl.replace(/\/+$/, '') + '/linkhub_data.json';
+        const res = await fetch(cleanUrl);
+        if (!res.ok) throw new Error('Cloud fetch error');
+        const data = await res.json();
+        if (data) {
+          if (Array.isArray(data.links)) {
+            links = data.links;
+            localStorage.setItem(STORAGE_KEY_LINKS, JSON.stringify(links));
+          }
+          if (Array.isArray(data.categories) && data.categories.length > 0) {
+            categories = data.categories;
+            localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(categories));
+          }
+          renderCategoryPills();
+          populateCategorySelect();
+          renderLinks();
+          updateStats();
+          if (showFeedback) showToast('ซิงค์ข้อมูลล่าสุดจากคลาวด์แล้ว! ☁️');
+        }
+      } catch (err) {
+        console.error('Firebase sync error:', err);
+        if (showFeedback) showToast('ไม่สามารถเชื่อมต่อคลาวด์ได้', '⚠️');
+      }
+    }
+
+    let cloudSaveTimer = null;
+    function syncToCloud() {
+      if (!firebaseUrl) return;
+      clearTimeout(cloudSaveTimer);
+      cloudSaveTimer = setTimeout(async () => {
+        try {
+          const cleanUrl = firebaseUrl.replace(/\/+$/, '') + '/linkhub_data.json';
+          await fetch(cleanUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              links: links,
+              categories: categories,
+              updated_at: new Date().toISOString()
+            })
+          });
+        } catch (err) {
+          console.error('Cloud save failed', err);
+        }
+      }, 500);
+    }
+
+    function updateCloudUI(isActive) {
+      const badge = document.getElementById('cloudStatusBadge');
+      const tag = document.getElementById('cloudStatusTag');
+      const activeBar = document.getElementById('cloudActiveBar');
+      const btnShare = document.getElementById('btnShareCloud');
+      const input = document.getElementById('firebaseUrlInput');
+
+      input.value = firebaseUrl || '';
+
+      if (isActive && firebaseUrl) {
+        badge.textContent = '☁️ Cloud';
+        badge.className = 'text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-medium';
+        tag.textContent = '🟢 เชื่อมต่อแล้ว';
+        tag.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium';
+        activeBar.classList.remove('hidden');
+        btnShare.classList.remove('hidden');
+      } else {
+        badge.textContent = 'Local';
+        badge.className = 'text-[9px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium';
+        tag.textContent = '⚪ ยังไม่ต่อ';
+        tag.className = 'text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-300 font-medium';
+        activeBar.classList.add('hidden');
+        btnShare.classList.add('hidden');
+      }
+    }
+
+    function saveFirebaseConfig() {
+      const input = document.getElementById('firebaseUrlInput');
+      const val = input.value.trim();
+      if (!val) {
+        firebaseUrl = '';
+        localStorage.removeItem(STORAGE_KEY_FIREBASE);
+        updateCloudUI(false);
+        showToast('ปิดการเชื่อมต่อคลาวด์แล้ว');
+        return;
+      }
+      firebaseUrl = val;
+      localStorage.setItem(STORAGE_KEY_FIREBASE, firebaseUrl);
+      updateCloudUI(true);
+      showToast('บันทึกและเริ่มซิงค์คลาวด์แล้ว! ☁️');
+      syncToCloud(); // Save current data up
+      closeSyncModal();
+    }
+
+    function shareCloudSetupLink() {
+      if (!firebaseUrl) return;
+      const base = window.location.origin + window.location.pathname;
+      const setupUrl = `${base}?db=${encodeURIComponent(firebaseUrl)}`;
+      copyToClipboard(setupUrl);
+      showToast('คัดลอกลิงก์ต่อคลาวด์แล้ว! ส่งให้มือถือแตะเปิดได้เลย 📲');
+    }
+
+    // INSTANT LINK SYNC (#sync=...)
+    function checkUrlSync() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#sync=')) {
+        try {
+          const b64 = hash.replace('#sync=', '');
+          const jsonStr = decodeURIComponent(escape(atob(b64)));
+          const data = JSON.parse(jsonStr);
+          if (data.l && Array.isArray(data.l)) {
+            links = data.l;
+            localStorage.setItem(STORAGE_KEY_LINKS, JSON.stringify(links));
+          }
+          if (data.c && Array.isArray(data.c)) {
+            categories = data.c;
+            localStorage.setItem(STORAGE_KEY_CATS, JSON.stringify(categories));
+          }
+          // Remove hash cleanly
+          history.replaceState(null, null, window.location.pathname + window.location.search);
+          showToast(`ซิงค์ข้อมูล ${links.length} ลิ้งค์ เข้ามือถือเรียบร้อย! 🎉`, '📲');
+        } catch (err) {
+          console.error('URL Sync failed', err);
+        }
+      }
+    }
+
+    function generateSyncUrl() {
+      const data = {
+        v: 2,
+        l: links,
+        c: categories
+      };
+      const jsonStr = JSON.stringify(data);
+      const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+      const base = window.location.origin + window.location.pathname;
+      return `${base}#sync=${b64}`;
+    }
+
+    function copySyncLink() {
+      const url = generateSyncUrl();
+      copyToClipboard(url);
+      showToast('คัดลอกลิงก์ซิงค์แล้ว! ส่งเข้า Messenger/LINE แล้วแตะเปิดบนมือถือได้เลย 📋');
+    }
+
+    function toggleQrCode() {
+      const container = document.getElementById('qrCodeContainer');
+      const img = document.getElementById('qrCodeImage');
+      if (container.classList.contains('hidden')) {
+        const url = generateSyncUrl();
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
+        container.classList.remove('hidden');
+      } else {
+        container.classList.add('hidden');
+      }
+    }
+
+    function toggleFirebaseGuide() {
+      const g = document.getElementById('firebaseGuide');
+      g.classList.toggle('hidden');
     }
 
     // Initialize App
@@ -703,6 +980,13 @@
       populateCategorySelect();
       renderLinks();
       updateStats();
+
+      // Auto sync when returning to tab/app
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && firebaseUrl) {
+          syncFromCloud();
+        }
+      });
     });
 
     // Dark Mode handling
@@ -739,7 +1023,18 @@
       }, 2500);
     }
 
-    // CUSTOM IN-APP CONFIRM MODAL (Works 100% on Messenger / Safari)
+    // Modal Control
+    function openSyncModal() {
+      updateCloudUI(Boolean(firebaseUrl));
+      document.getElementById('syncModal').classList.remove('hidden');
+    }
+
+    function closeSyncModal() {
+      document.getElementById('syncModal').classList.add('hidden');
+      document.getElementById('qrCodeContainer').classList.add('hidden');
+    }
+
+    // CUSTOM IN-APP CONFIRM MODAL
     function showInAppConfirm(title, desc, callback) {
       document.getElementById('confirmTitle').textContent = title;
       document.getElementById('confirmDesc').textContent = desc;
@@ -909,12 +1204,12 @@
       const gridBtn = document.getElementById('viewGridBtn');
       const listBtn = document.getElementById('viewListBtn');
       if (mode === 'grid') {
-        gridBtn.className = 'px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100';
-        listBtn.className = 'px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium';
+        gridBtn.className = 'px-2 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100';
+        listBtn.className = 'px-2 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium';
         document.getElementById('linksContainer').className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4';
       } else {
-        listBtn.className = 'px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100';
-        gridBtn.className = 'px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium';
+        listBtn.className = 'px-2 py-1 rounded-md bg-white dark:bg-slate-800 shadow-xs font-medium text-slate-800 dark:text-slate-100';
+        gridBtn.className = 'px-2 py-1 rounded-md text-slate-600 dark:text-slate-300 font-medium';
         document.getElementById('linksContainer').className = 'flex flex-col gap-3';
       }
       renderLinks();
@@ -1427,7 +1722,6 @@
       showToast(link.is_favorite ? 'ปักหมุดรายการโปรดแล้ว ⭐' : 'ยกเลิกรายการโปรดแล้ว');
     }
 
-    // Prompt Delete using in-app modal
     function promptDeleteLink(id) {
       showInAppConfirm(
         'ต้องการลบลิ้งค์นี้ใช่หรือไม่?',
@@ -1443,7 +1737,6 @@
       );
     }
 
-    // Prompt Clear All Links
     function promptClearAllLinks() {
       showInAppConfirm(
         'ยืนยันลบลิ้งค์ทั้งหมด?',
@@ -1766,19 +2059,26 @@
     function copyToClipboard(text) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
-          showToast('คัดลอกลิ้งค์แล้ว! 📋');
+          showToast('คัดลอกเรียบร้อยแล้ว! 📋');
         }).catch(() => {
-          showToast('ไม่สามารถคัดลอกได้', '❌');
+          fallbackCopyText(text);
         });
       } else {
-        const temp = document.createElement('input');
-        temp.value = text;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-        showToast('คัดลอกลิ้งค์แล้ว! 📋');
+        fallbackCopyText(text);
       }
+    }
+
+    function fallbackCopyText(text) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.style.position = 'fixed';
+      temp.style.left = '-9999px';
+      document.body.appendChild(temp);
+      temp.focus();
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast('คัดลอกเรียบร้อยแล้ว! 📋');
     }
   </script>
 </body>
